@@ -5,7 +5,7 @@ CREATE TABLE `user`
     `password`  VARCHAR(80) NOT NULL COMMENT 'Password hash',
     `role`      VARCHAR(80) NOT NULL COMMENT 'Role',
     `created`   DATETIME(6) NOT NULL COMMENT 'Record create datetime',
-    `modified`  DATETIME(6) NOT NULL COMMNET 'Record modify datetime',
+    `modified`  DATETIME(6) NOT NULL COMMENT 'Record modify datetime',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uix_name` (`name`) USING BTREE
 ) Engine=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='User';
