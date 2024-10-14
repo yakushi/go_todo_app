@@ -25,6 +25,7 @@ FROM golang:1.23.1 AS dev
 
 WORKDIR /app
 
-RUN go install github.com/air-verse/air@latest
+RUN git config --global --add safe.directory /app && \
+    go install github.com/air-verse/air@latest
 
 CMD ["air"]
