@@ -1,4 +1,5 @@
-FROM golang:1.18.2-bullseye as deploy-builder
+FROM golang:1.23.1-bookworm AS deploy-builder
+
 
 WORKDIR /app
 
@@ -10,7 +11,7 @@ RUN go build -trimpath -ldflags "-w -s" -o app
 
 # --------------------------------------------------------------
 
-FROM debian:bullseye-slim as deploy
+FROM debian:bullseye-slim AS deploy
 
 RUN apt-get update && apt-get upgrade
 
@@ -20,10 +21,10 @@ CMD ["./app"]
 
 # --------------------------------------------------------------
 
-FROM golang:1.18.2 as dev
+FROM golang:1.23.1 AS dev
 
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 CMD ["air"]
