@@ -24,6 +24,9 @@ ps: ## Check container status
 test: ## Execute tests
 	go test -race -shuffle=on ./...
 
+generate: ## Generate codes
+	go generate ./...
+
 help: ## Show options
 	@grep -E '^[A-Za-z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
