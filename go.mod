@@ -35,7 +35,7 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/leodido/go-urn v1.2.1 // indirect
-	golang.org/x/crypto v0.25.0 // indirect
+	golang.org/x/crypto v0.28.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 )
