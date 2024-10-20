@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/yakushi/go_todo_app/config"
@@ -15,6 +16,9 @@ func TestNewMux(t *testing.T) {
 	r := httptest.NewRequest(http.MethodGet, "/health", nil)
 	ctx := context.Background()
 	cfg, _ := config.New()
+	if _, defined := os.LookupEnv("CI"); defined {
+		cfg.DBPort = 3306
+	}
 	sut, cleanup, err := NewMux(ctx, cfg)
 	t.Cleanup(func() {
 		cleanup()
