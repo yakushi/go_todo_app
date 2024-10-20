@@ -15,13 +15,19 @@ func TestNewMux(t *testing.T) {
 	r := httptest.NewRequest(http.MethodGet, "/health", nil)
 	ctx := context.Background()
 	cfg, _ := config.New()
-	sut, _, _ := NewMux(ctx, cfg)
+	sut, cleanup, err := NewMux(ctx, cfg)
+	t.Cleanup(func() {
+		cleanup()
+	})
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
 	sut.ServeHTTP(w, r)
 	resp := w.Result()
 	t.Cleanup(func() { _ = resp.Body.Close() })
 
 	if resp.StatusCode != http.StatusOK {
-		t.Error("want sttus code 200, but", resp.StatusCode)
+		t.Error("want status code 200, but", resp.StatusCode)
 	}
 	got, err := io.ReadAll(resp.Body)
 	if err != nil {
