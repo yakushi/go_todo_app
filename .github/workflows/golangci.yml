@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
+      - run: openssl genrsa 4096 | tee auth/cert/secret.pem | openssl rsa -pubout > auth/cert/public.pem
       - name: golangci-lint
         uses: reviewdog/action-golangci-lint@v2
         with:
