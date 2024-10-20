@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -32,7 +33,7 @@ type Store interface {
 	Load(ctx context.Context, key string) (entity.UserID, error)
 }
 
-func NewJWTer(s Store) (*JWTer, error) {
+func NewJWTer(s Store, c clock.Clocker) (*JWTer, error) {
 	j := &JWTer{Store: s}
 	privkey, err := parse(rawPrivKey)
 	if err != nil {
@@ -44,7 +45,7 @@ func NewJWTer(s Store) (*JWTer, error) {
 	}
 	j.PrivateKey = privkey
 	j.PublicKey = pubkey
-	j.Clocker = clock.RealClocker{}
+	j.Clocker = c
 	return j, nil
 }
 
@@ -83,4 +84,23 @@ func (j *JWTer) GenerateToken(ctx context.Context, u entity.User) ([]byte, error
 		return nil, err
 	}
 	return signed, nil
+}
+
+func (j *JWTer) GetToken(ctx context.Context, r *http.Request) (jwt.Token, error) {
+	token, err := jwt.ParseRequest(
+		r,
+		jwt.WithKey(jwa.RS256, j.PublicKey),
+		jwt.WithValidate(false),
+	)
+	if err != nil {
+		return nil, err
+	}
+	if err := jwt.Validate(token, jwt.WithClock(j.Clocker)); err != nil {
+		return nil, fmt.Errorf("GetToken: failed to validate token: %w", err)
+	}
+	// Redisから削除して手動でexpireさせていることもありうる。
+	if _, err := j.Store.Load(ctx, token.JwtID()); err != nil {
+		return nil, fmt.Errorf("GetToken: %q expired: %w", token.JwtID(), err)
+	}
+	return token, nil
 }
