@@ -18,6 +18,7 @@ func TestNewMux(t *testing.T) {
 	cfg, _ := config.New()
 	if _, defined := os.LookupEnv("CI"); defined {
 		cfg.DBPort = 3306
+		cfg.RedisPort = 6379
 	}
 	sut, cleanup, err := NewMux(ctx, cfg)
 	t.Cleanup(func() {
